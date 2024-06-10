@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ProfileImage;
 use App\Http\Requests\RegiterRequest;
+use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserDetail;
 use App\Models\User;
@@ -52,11 +53,12 @@ class AuthController extends Controller
     }
     public function update(ProfileImage $request)
     {
+        $user = Auth::user();
         $data = $request->validated();
-        $image = $request->image;
-//        $ext = $image->getClientOriginalExtension();
+        $image = $data['image'];
+        $ext = $image->getClientOriginalExtension();
         $imageName = time() . '.' . $ext;
-        // $image->move(public_path('/') . 'upload/', $imageName);
-        return $imageName;
+//        $image->move(public_path('/') . 'upload/', $imageName);
+        return $imageName.'-'.$user->name;
     }
 }

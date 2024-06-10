@@ -22,7 +22,7 @@ class ProfileImage extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ];
     }
 }
