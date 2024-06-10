@@ -45,4 +45,9 @@ class AuthController extends Controller
         $user->delete();
         return response()->json(['success' => true,'data'=>$user],200);
     }
+    public function update(Request $request){
+        $user=Auth::user();
+        $user->update($request->all());
+        return response()->json(['success' => true,'data'=>$user],200);
+    }
 }

@@ -20,6 +20,7 @@ Route::prefix('auth')->group(function () {
 });
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::put('/user/update',[AuthController::class, 'update']);
     Route::delete('/user/remove',[AuthController::class, 'remove']);
     Route::get('/user', function (Request $request) {
         return $request->user();
