@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegiterRequest;
+use App\Http\Resources\UserDetail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,19 +23,19 @@ class AuthController extends Controller
         }
         $user = Auth::user();
         $token = $user->createToken('token')->plainTextToken;
-        return response()->json(['success' => true, 'data' => $user, 'token' => $token], 200);
+        return response()->json(['success' => true,'message'=>'You have been log in', 'data' => UserDetail::make($user), 'token' => $token], 200);
     }
     public function logout(LoginRequest $request){
         $user = Auth::user();
         $user->tokens()->delete();
         auth()->guard('web')->logout();
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true,'message' => 'You have been logged out']);
     }
     public function register(RegiterRequest $request){
         $newUser=$request->validated();
         try {
             $user=User::create($newUser);
-            return response()->json(['success' => true,'message'=>'New user have been created','data'=>$user],201);
+            return response()->json(['success' => true,'message'=>'New user have been created','data'=>UserDetail::make($user)],201);
         }catch (\Exception $e){
             return response()->json(['success'=>false,'message' => 'User Registration Failed!','error'=>$e], 500);
         }
@@ -43,11 +44,11 @@ class AuthController extends Controller
     {
         $user=Auth::user();
         $user->delete();
-        return response()->json(['success' => true,'data'=>$user],200);
+        return response()->json(['success' => true,'data'=>UserDetail::make($user)],200);
     }
     public function update(Request $request){
         $user=Auth::user();
         $user->update($request->all());
-        return response()->json(['success' => true,'data'=>$user],200);
+        return response()->json(['success' => true,'data'=>UserDetail::make($user)],200);
     }
 }
