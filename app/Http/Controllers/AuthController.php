@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UserRequests\ForgotPasswordRequest;
 use App\Http\Requests\UserRequests\LoginRequest;
 use App\Http\Requests\UserRequests\ProfileImage;
