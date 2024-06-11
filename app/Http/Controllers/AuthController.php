@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\ProfileImage;
-use App\Http\Requests\RegiterRequest;
-use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\UserRequests\ForgotPasswordRequest;
+use App\Http\Requests\UserRequests\LoginRequest;
+use App\Http\Requests\UserRequests\ProfileImage;
+use App\Http\Requests\UserRequests\RegiterRequest;
+use App\Http\Requests\UserRequests\ResetPasswordRequest;
 use App\Http\Resources\UserDetail;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -76,5 +81,43 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         return response()->json(['success' => true, 'data' => UserDetail::make($user)], 200);
+    }
+    public function forgetPassword(ForgotPasswordRequest $request)
+    {
+        $data=$request->validated();
+        $email=$request->email;
+        try {
+            $user=User::where('email',$email)->first();
+            if($user){
+                $remember_token=Str::random(60);
+                DB::table('password_reset_tokens')->insert([
+                    'email' => $email,
+                    'token' => $remember_token,
+                    'created_at'=>Carbon::now()
+                ]);
+            };
+            return response()->json(['success'=>true,'data'=>$email,'reset_token'=>$remember_token],200);
+        }catch (\Exception $e){
+            return response()->json(['success'=>false,'message'=>$e->getMessage()],404);
+        }
+    }
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $reset_request=$request->validated();
+        $token=$reset_request['reset_token'];
+        $email=$reset_request['email'];
+        try {
+            $tokenData = DB::table('password_reset_tokens')->where('token',$token)->first();
+            $user=User::where('email',$email)->first();
+            if(!$user){
+                return response()->json(['success'=>false,'message'=>'Invalid token'],404);
+            }
+            $user->update(['password'=>Hash::make($reset_request['password'])]);
+            DB::table('password_reset_tokens')->where('token',$token)->delete();
+            return response()->json(['success'=>true,'new_password'=>$request->password],200);
+        }catch (\Exception $e){
+            return response()->json(['success'=>false,'message'=>$e->getMessage()],404);
+        }
+
     }
 }

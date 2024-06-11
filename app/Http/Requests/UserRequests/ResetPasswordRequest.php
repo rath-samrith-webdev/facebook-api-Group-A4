@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\UserRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProfileImage extends FormRequest
+class ResetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,9 @@ class ProfileImage extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'email'=>'required|email',
+            'reset_token'=>'required',
+            'password'=>'required|confirmed',
         ];
     }
 }
