@@ -11,6 +11,7 @@ use App\Http\Resources\UserDetail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class AuthController extends Controller
 {
@@ -51,14 +52,29 @@ class AuthController extends Controller
         $user->delete();
         return response()->json(['success' => true, 'data' => UserDetail::make($user)], 200);
     }
-    public function update(ProfileImage $request)
+    public function updateProfileImage(ProfileImage $request)
     {
         $user = Auth::user();
         $data = $request->validated();
         $image = $data['image'];
         $ext = $image->getClientOriginalExtension();
-        $imageName = time() . '.' . $ext;
-//        $image->move(public_path('/') . 'upload/', $imageName);
-        return $imageName.'-'.$user->name;
+        $imageName = 'profile-'.$user->id.'-'.time() . '.' . $ext;
+        try {
+            $path=public_path('/') . '/upload/profiles/user-' . $user->id .'/'. $user->image;
+            if(File::exists($path)){
+                unlink($path);
+            }
+            $user->update(['image' => $imageName]);
+            $image->move(public_path('/') . '/upload/profiles/user-'.$user->id, $imageName);
+            return response()->json(['success' => true, 'message' => 'Profile image has been updated', 'data' =>UserDetail::make($user)], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Profile image update failed!', 'error' => $e], 500);
+        }
+    }
+    public function me(Request $request)
+    {
+        $user = Auth::user();
+        return response()->json(['success' => true, 'data' => UserDetail::make($user)], 200);
     }
 }

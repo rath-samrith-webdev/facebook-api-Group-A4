@@ -23,7 +23,6 @@ class RegiterRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|required',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed',
         ];

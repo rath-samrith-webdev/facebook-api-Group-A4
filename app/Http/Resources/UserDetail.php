@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\File;
 
 class UserDetail extends JsonResource
 {
@@ -17,6 +18,7 @@ class UserDetail extends JsonResource
         return [
             'uid'=>$this->id,
             'user_name'=>$this->name,
+            'profile'=>$this->image ? asset('/upload/profiles/'.'user-'.$this->id.'/'.$this->image):"No profile image",
             'email'=>$this->email
         ];
     }
