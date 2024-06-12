@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateCommentRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -18,7 +19,17 @@ class CommentController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $comments = Comment::all();
+            $comments=Comment::all();
+            return response()->json(['success' => true, 'comments' => CommentResource::collection($comments)],200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Comment is not found'], 500);
+        }
+    }
+    public function myComments(): JsonResponse
+    {
+        $uid=Auth::id();
+        try {
+            $comments=Comment::where('user_id',$uid)->get();
             return response()->json(['success' => true, 'comments' => CommentResource::collection($comments)],200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Comment is not found'], 500);
@@ -32,8 +43,9 @@ class CommentController extends Controller
     {
         try {
             $validatedData = $request->validated();
+            $validatedData['user_id'] = Auth::id();
             $comment = Comment::create($validatedData);
-            return response()->json($comment, 201);
+            return response()->json(['success'=>true,'data'=>CommentResource::make($comment)], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Comment is not found'], 500);
         }
@@ -45,7 +57,7 @@ class CommentController extends Controller
     public function show(Comment $comment): JsonResponse
     {
         try {
-            return response()->json($comment);
+            return response()->json(['success' => true, 'comment' => new CommentResource($comment)],200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Comment is not found'], 404);
         }
@@ -58,6 +70,7 @@ class CommentController extends Controller
     {
         try {
             $validatedData = $request->validated();
+            $validatedData['user_id'] = Auth::id();
             $comment->update($validatedData);
             return response()->json($comment);
         } catch (ModelNotFoundException $e) {

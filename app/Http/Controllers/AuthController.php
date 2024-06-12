@@ -69,9 +69,8 @@ class AuthController extends Controller
             $user->update(['image' => $imageName]);
             $image->move(public_path('/') . '/upload/profiles/user-'.$user->id, $imageName);
             return response()->json(['success' => true, 'message' => 'Profile image has been updated', 'data' =>UserDetail::make($user)], 200);
-
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Profile image update failed!', 'error' => $e], 500);
+            return response()->json(['success' => false, 'message' => 'Profile image update failed!', 'error' => $e->getMessage()], 500);
         }
     }
     public  function updateProfileData(UpdateProfileDataRequest $request):JsonResponse

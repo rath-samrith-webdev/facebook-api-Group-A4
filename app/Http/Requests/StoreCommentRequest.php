@@ -24,7 +24,7 @@ class StoreCommentRequest extends FormRequest
         return [
             "text"=> 'required|string',
             "post_id"=> 'required|integer',
-            "user_id"=> 'required|integer',
+            "user_id"=> 'integer',
         ];
     }
 }
