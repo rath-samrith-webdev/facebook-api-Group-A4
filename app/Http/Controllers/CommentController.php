@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
@@ -18,7 +19,7 @@ class CommentController extends Controller
     {
         try {
             $comments = Comment::all();
-            return response()->json($comments);
+            return response()->json(['success' => true, 'comments' => CommentResource::collection($comments)],200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Comment is not found'], 500);
         }
@@ -61,7 +62,7 @@ class CommentController extends Controller
             return response()->json($comment);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Comment is not found'], 404);
-        } 
+        }
     }
 
     /**
