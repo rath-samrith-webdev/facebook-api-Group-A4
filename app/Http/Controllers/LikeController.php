@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Like;
 use App\Http\Requests\StoreLikeRequest;
 use App\Http\Requests\UpdateLikeRequest;
+use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
 {
@@ -13,9 +14,23 @@ class LikeController extends Controller
      */
     public function index()
     {
-        //
+        return Like::all();
     }
 
+    public function myLikes()
+    {
+        $uid=Auth::id();
+        try {
+            $likes=Like::where('user_id',$uid)->get();
+            if(count($likes)==0){
+                return response()->json(['success'=>true,'message'=>'No Likes Yet'],200);
+            }
+            return response()->json(['success'=>true,'data'=>$likes],200);
+        }catch (\Exception $exception){
+            return response()->json(['success'=>false,'message'=>$exception->getMessage()],500);
+        }
+
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -29,7 +44,15 @@ class LikeController extends Controller
      */
     public function store(StoreLikeRequest $request)
     {
-        //
+        $uid=Auth::id();
+        $data=$request->validated();
+        $data['user_id']=$uid;
+        try {
+            $like=Like::create($data);
+            return response()->json(['success'=>true,'message'=>'Liked Successfully','data'=>$like],201);
+        }catch (\Exception $exception){
+            return response()->json(['success'=>false,'message'=>$exception->getMessage()],500);
+        }
     }
 
     /**
@@ -53,7 +76,19 @@ class LikeController extends Controller
      */
     public function update(UpdateLikeRequest $request, Like $like)
     {
-        //
+        $uid=Auth::user()->id;
+        $data=$request->validated();
+        $data['user_id']=$uid;
+        try {
+            if($like->user_id == $uid){
+                $like->update($data);
+                return response()->json(['success'=>true,'message'=>'Liked Successfully','data'=>$like],200);
+            }else{
+                return response()->json(['success'=>false,'message'=>'Something Went Wrong'],500);
+            }
+        }catch (\Exception $exception){
+            return response()->json(['success'=>false,'message'=>$exception->getMessage()],500);
+        }
     }
 
     /**
@@ -61,6 +96,16 @@ class LikeController extends Controller
      */
     public function destroy(Like $like)
     {
-        //
+        $user_id=Auth::id();
+        try {
+            if($like->user_id == $user_id){
+                $like->delete();
+                return response()->json(['success'=>true,'message'=>'Liked Successfully','data'=>$like],200);
+            }else{
+                return response()->json(['success'=>false,'message'=>'Something Went Wrong'],500);
+            }
+        }catch (\Exception $exception){
+            return response()->json(['success'=>false,'message'=>$exception->getMessage()],500);
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ReplyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,9 @@ Route::prefix('auth')->group(function () {
         Route::get('/all', [CommentController::class, 'index']);
         Route::get('/replies', [ReplyController::class, 'index']);
     });
+    Route::prefix('likes')->group(function () {
+        Route::get('/all', [LikeController::class, 'index']);
+    });
 });
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
@@ -44,6 +48,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/my-replies', [ReplyController::class, 'myReplies']);
         Route::put('/update/{reply}', [ReplyController::class, 'update']);
         Route::delete('/delete/{reply}', [ReplyController::class, 'destroy']);
+    });
+    Route::prefix('likes')->group(function () {
+        Route::post('/create', [LikeController::class, 'store']);
+        Route::get('/my-likes', [LikeController::class, 'myLikes']);
+        Route::put('/update/{like}', [LikeController::class, 'update']);
+        Route::delete('/delete/{like}', [LikeController::class, 'destroy']);
     });
 });
 
