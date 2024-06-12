@@ -7,8 +7,10 @@ use App\Http\Requests\UserRequests\LoginRequest;
 use App\Http\Requests\UserRequests\ProfileImage;
 use App\Http\Requests\UserRequests\RegiterRequest;
 use App\Http\Requests\UserRequests\ResetPasswordRequest;
+use App\Http\Requests\UserRequests\UpdateProfileDataRequest;
 use App\Http\Resources\UserDetail;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -19,11 +21,7 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function index()
-    {
-        return User::all();
-    }
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->only(['email', 'password']);
         if (!auth()->attempt($credentials)) {
@@ -33,14 +31,14 @@ class AuthController extends Controller
         $token = $user->createToken('token')->plainTextToken;
         return response()->json(['success' => true, 'message' => 'You have been log in', 'data' => UserDetail::make($user), 'token' => $token], 200);
     }
-    public function logout(LoginRequest $request)
+    public function logout(LoginRequest $request): JsonResponse
     {
         $user = Auth::user();
         $user->tokens()->delete();
         auth()->guard('web')->logout();
         return response()->json(['success' => true, 'message' => 'You have been logged out']);
     }
-    public function register(RegiterRequest $request)
+    public function register(RegiterRequest $request):JsonResponse
     {
         $newUser = $request->validated();
         try {
@@ -50,13 +48,13 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => 'User Registration Failed!', 'error' => $e], 500);
         }
     }
-    public function remove(Request $request)
+    public function remove(Request $request): JsonResponse
     {
         $user = Auth::user();
         $user->delete();
         return response()->json(['success' => true, 'data' => UserDetail::make($user)], 200);
     }
-    public function updateProfileImage(ProfileImage $request)
+    public function updateProfileImage(ProfileImage $request):JsonResponse
     {
         $user = Auth::user();
         $data = $request->validated();
@@ -76,14 +74,24 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => 'Profile image update failed!', 'error' => $e], 500);
         }
     }
-    public function me(Request $request)
+    public  function updateProfileData(UpdateProfileDataRequest $request):JsonResponse
+    {
+        $user = Auth::user();
+        $data = $request->validated();
+        try {
+            $user->update($data);
+            return response()->json(['success' => true, 'message' => 'Profile data has been updated', 'data' => UserDetail::make($user)], 200);
+        }catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Profile data update failed!', 'error' => $e->getMessage()], 500);
+        }
+    }
+    public function me(Request $request): JsonResponse
     {
         $user = Auth::user();
         return response()->json(['success' => true, 'data' => UserDetail::make($user)], 200);
     }
-    public function forgetPassword(ForgotPasswordRequest $request)
-    {
-        $data=$request->validated();
+    public function forgetPassword(ForgotPasswordRequest $request):JsonResponse
+    {    $data=$request->validated();
         $email=$request->email;
         try {
             $user=User::where('email',$email)->first();
@@ -100,7 +108,7 @@ class AuthController extends Controller
             return response()->json(['success'=>false,'message'=>$e->getMessage()],404);
         }
     }
-    public function resetPassword(ResetPasswordRequest $request)
+    public function resetPassword(ResetPasswordRequest $request):JsonResponse
     {
         $reset_request=$request->validated();
         $token=$reset_request['reset_token'];
