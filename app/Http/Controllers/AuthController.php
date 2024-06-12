@@ -90,8 +90,9 @@ class AuthController extends Controller
         return response()->json(['success' => true, 'data' => UserDetail::make($user)], 200);
     }
     public function forgetPassword(ForgotPasswordRequest $request):JsonResponse
-    {    $data=$request->validated();
-        $email=$request->email;
+    {
+        $data=$request->validated();
+        $email=$data['email'];
         try {
             $user=User::where('email',$email)->first();
             if($user){
@@ -101,7 +102,9 @@ class AuthController extends Controller
                     'token' => $remember_token,
                     'created_at'=>Carbon::now()
                 ]);
-            };
+            }else{
+                return response()->json(['success' => false, 'message' => 'User not found!'], 404);
+            }
             return response()->json(['success'=>true,'data'=>$email,'reset_token'=>$remember_token],200);
         }catch (\Exception $e){
             return response()->json(['success'=>false,'message'=>$e->getMessage()],404);

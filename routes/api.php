@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReplyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,10 @@ Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('/forget-password', [AuthController::class, 'forgetPassword']);
     Route::post('/password/reset', [AuthController::class, 'resetPassword']);
-    Route::get('comments/all', [CommentController::class, 'index']);
+    Route::prefix('comments')->group(function () {
+        Route::get('/all', [CommentController::class, 'index']);
+        Route::get('/replies', [ReplyController::class, 'index']);
+    });
 });
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
@@ -34,6 +38,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/my-comments', [CommentController::class, 'myComments']);
         Route::put('/update/{comment}', [CommentController::class, 'update']);
         Route::delete('/delete/{comment}', [CommentController::class, 'destroy']);
+    });
+    Route::prefix('replies')->group(function () {
+        Route::post('/create', [ReplyController::class, 'store']);
+        Route::get('/my-replies', [ReplyController::class, 'myReplies']);
+        Route::put('/update/{reply}', [ReplyController::class, 'update']);
+        Route::delete('/delete/{reply}', [ReplyController::class, 'destroy']);
     });
 });
 

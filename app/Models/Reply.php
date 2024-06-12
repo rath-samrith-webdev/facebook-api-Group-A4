@@ -10,7 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Reply extends Model
 {
     use HasFactory;
-    protected $fillable = [];
+    protected $fillable = [
+        'text',
+        'comment_id',
+        'user_id'
+    ];
     public function user():BelongsTo
     {
         return $this->belongsTo(User::class);
