@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\FriendRequest;
 use App\Models\Like;
 use App\Models\React;
 use App\Models\Reply;
@@ -25,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ReactSeeder::class);
         $this->call(LikeSeeder::class);
         $this->call(ReplySeeder::class);
+        FriendRequest::factory(20)->create();
     }
 }

@@ -12,6 +12,14 @@ class FriendRequestController extends Controller
      */
     public function index()
     {
+        return FriendRequest::all();
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
         //
     }
 
@@ -28,6 +36,14 @@ class FriendRequestController extends Controller
      */
     public function show(FriendRequest $friendRequest)
     {
+        return $friendRequest;
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(FriendRequest $friendRequest)
+    {
         //
     }
 
@@ -36,7 +52,7 @@ class FriendRequestController extends Controller
      */
     public function update(Request $request, FriendRequest $friendRequest)
     {
-        //
+        return $friendRequest;
     }
 
     /**

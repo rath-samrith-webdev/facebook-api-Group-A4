@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FriendListController;
+use App\Http\Controllers\FriendRequestController;
 use App\Http\Controllers\PostController;
 use App\Models\Post;
 use App\Http\Controllers\AuthController;
@@ -39,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
        Route::get('/list',[FriendListController::class, 'index']);
        Route::post('/create',[FriendListController::class, 'store']);
        Route::delete('/delete/{friends}',[FriendListController::class, 'destroy']);
+       Route::get('/request/all',[FriendRequestController::class, 'index']);
+        Route::get('/request/show/{friendRequest}',[FriendRequestController::class, 'show']);
+       Route::put('/request/confirm/{friendRequest}',[FriendRequestController::class, 'update'])   ;
     });
 
     Route::prefix('posts')->group(function () {

@@ -60,4 +60,8 @@ class User extends Authenticatable
    {
        return $this->hasMany(Friendlist::class);
    }
+   public function friendrequests():HasMany
+   {
+       return $this->hasMany(Friendrequest::class,'request_to','id');
+   }
 }
