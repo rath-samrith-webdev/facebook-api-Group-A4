@@ -14,7 +14,6 @@ class Post extends Model
     protected $fillable = [
         'text',
         'user_id',
-        'image_id',
     ];
     public function user():BelongsTo
     {
@@ -24,7 +23,13 @@ class Post extends Model
     public function comments():HasMany{
         return $this->hasMany(Comment::class);
     }
-
-
+    public function likes():HasMany
+    {
+        return $this->hasMany(Like::class);
+    }
+    public function images():HasMany
+    {
+        return $this->hasMany(Image::class);
+    }
 
 }
