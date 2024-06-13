@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory(10)->create();
-        $this->call(ImageSeeder::class);
         $this->call(PostSeeder::class);
+        $this->call(ImageSeeder::class);
         $this->call(CommentSeeder::class);
         $this->call(ReactSeeder::class);
         $this->call(LikeSeeder::class);

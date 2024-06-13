@@ -21,8 +21,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('/forget-password', [AuthController::class, 'forgetPassword']);
+    Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+    Route::prefix('comments')->group(function () {
+        Route::get('/all', [CommentController::class, 'index']);
+        Route::get('/replies', [ReplyController::class, 'index']);
+    });
+    Route::prefix('likes')->group(function () {
+        Route::get('/all', [LikeController::class, 'index']);
+    });
 });
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
@@ -30,6 +40,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user/profile-data/update', [AuthController::class, 'updateProfileData']);
     Route::delete('/user/remove', [AuthController::class, 'remove']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::prefix('posts')->group(function () {
+        Route::get('/', [PostController::class, 'index']);
+        Route::post('/create', [PostController::class, 'store']);
+        Route::get('/show/{post}', [PostController::class, 'show']);
+        Route::get('/my-posts', [PostController::class, 'myPosts']);
+        Route::put('/update/{post}', [PostController::class, 'update']);
+        Route::delete('/delete/{post}', [PostController::class, 'destroy']);
+    });
     Route::prefix('comments')->group(function () {
         Route::post('/create', [CommentController::class, 'store']);
         Route::get('/my-comments', [CommentController::class, 'myComments']);
@@ -49,10 +67,3 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/delete/{like}', [LikeController::class, 'destroy']);
     });
 });
-
-
-Route::get('/posts', [PostController::class, 'index']);
-Route::post('/posts', [PostController::class, 'store']);
-Route::get('/posts/{id}', [PostController::class, 'show']);
-Route::put('/posts/{id}', [PostController::class, 'update']);
-Route::delete('/posts/{id}', [PostController::class, 'destroy']);

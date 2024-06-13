@@ -19,7 +19,6 @@ class PostFactory extends Factory
         return [
             'text' => fake()->sentence(),
             'user_id' => rand(1, 10),
-            'image_id' => 1,
         ];
     }
 }

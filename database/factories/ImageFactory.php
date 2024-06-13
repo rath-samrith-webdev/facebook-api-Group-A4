@@ -17,7 +17,8 @@ class ImageFactory extends Factory
     public function definition(): array
     {
         return [
-            'image_name' => fake()->sentence()
+            'post_id' => rand(1, 10),
+            'image_name' => fake()->sentence(),
         ];
     }
 }

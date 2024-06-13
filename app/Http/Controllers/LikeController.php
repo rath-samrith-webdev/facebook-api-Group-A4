@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\LikeResource;
 use App\Models\Like;
 use App\Http\Requests\StoreLikeRequest;
 use App\Http\Requests\UpdateLikeRequest;
@@ -14,7 +15,7 @@ class LikeController extends Controller
      */
     public function index()
     {
-        return Like::all();
+        return response()->json(['success'=>true,'data'=>LikeResource::collection(Like::all())],200);
     }
 
     public function myLikes()
