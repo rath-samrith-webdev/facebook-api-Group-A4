@@ -17,7 +17,9 @@ class UserResource extends JsonResource
         return [
             'id'=>$this->id,
             'name'=>$this->name,
-            'profile'=>$this->image ? asset('/upload/profiles/'.'user-'.$this->id.'/'.$this->image):"No profile image"
+            'profile'=>$this->image ? asset('/upload/profiles/'.'user-'.$this->id.'/'.$this->image):"No profile image",
+            'friends_count'=>$this->friendlists()->get()->count(),
+            'friends'=>$this->friendlists()->get()
         ];
     }
 }

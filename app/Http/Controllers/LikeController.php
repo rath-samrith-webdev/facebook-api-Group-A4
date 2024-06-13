@@ -26,7 +26,7 @@ class LikeController extends Controller
             if(count($likes)==0){
                 return response()->json(['success'=>true,'message'=>'No Likes Yet'],200);
             }
-            return response()->json(['success'=>true,'data'=>$likes],200);
+            return response()->json(['success'=>true,'data'=>LikeResource::collection($likes)],200);
         }catch (\Exception $exception){
             return response()->json(['success'=>false,'message'=>$exception->getMessage()],500);
         }

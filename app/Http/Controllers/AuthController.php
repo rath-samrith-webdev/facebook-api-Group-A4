@@ -9,6 +9,7 @@ use App\Http\Requests\UserRequests\RegiterRequest;
 use App\Http\Requests\UserRequests\ResetPasswordRequest;
 use App\Http\Requests\UserRequests\UpdateProfileDataRequest;
 use App\Http\Resources\UserDetail;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -87,7 +88,7 @@ class AuthController extends Controller
     public function me(Request $request): JsonResponse
     {
         $user = Auth::user();
-        return response()->json(['success' => true, 'data' => UserDetail::make($user)], 200);
+        return response()->json(['success' => true, 'data' => UserResource::make($user)], 200);
     }
     public function forgetPassword(ForgotPasswordRequest $request):JsonResponse
     {
