@@ -68,11 +68,16 @@ class CommentController extends Controller
      */
     public function update(UpdateCommentRequest $request, Comment $comment): JsonResponse
     {
+        $user=Auth::user();
         try {
-            $validatedData = $request->validated();
-            $validatedData['user_id'] = Auth::id();
-            $comment->update($validatedData);
-            return response()->json($comment);
+            if($comment->user_id==$user->id){
+                $validatedData = $request->validated();
+                $validatedData['user_id'] = Auth::id();
+                $comment->update($validatedData);
+                return response()->json(['success'=>true,'data'=>CommentResource::make($comment)],200);
+            }else{
+                return response()->json(['error'=>'You cannot edit this comment'],403);
+            }
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Comment is not found'], 404);
         }
