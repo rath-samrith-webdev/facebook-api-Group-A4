@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Support\Facades\Storage as FacadesStorage;
 
 class PostController extends Controller
 {
@@ -13,7 +15,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::all();
+        return response()->json($posts);
     }
 
     /**
@@ -21,7 +24,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        // Not typically used in API controllers.
     }
 
     /**
@@ -29,7 +32,9 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $post = Post::create($validated);
+        return response()->json(['success' => true, 'data' => $post], 201);
     }
 
     /**
@@ -37,7 +42,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return response()->json($post);
     }
 
     /**
@@ -45,7 +50,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        // Not typically used in API controllers.
     }
 
     /**
@@ -53,7 +58,24 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        $validated = $request->validated();
+
+        $post->update($validated);
+
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                FacadesStorage::disk('public')->delete($post->image);
+            }
+            $post->image = $request->file('image')->store('post_images', 'public');
+        }
+
+        $post->save();
+
+        return response()->json([
+            'success' => true,
+            'data' => $post,
+            'msg' => 'Post updated successfully'
+        ], 200);
     }
 
     /**
@@ -61,6 +83,11 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        if ($post->image) {
+            FacadesStorage::disk('public')->delete($post->image);
+        }
+        $post->delete();
+
+        return response()->json(['success' => true]);
     }
 }
