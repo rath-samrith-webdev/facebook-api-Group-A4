@@ -29,7 +29,8 @@ class ImageController extends Controller
      */
     public function store(StoreImageRequest $request)
     {
-        //
+        $data = $request->validated();
+        return $data['image'];
     }
 
     /**
