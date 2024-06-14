@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FriendRequestResource;
 use App\Models\FriendList;
 use App\Models\FriendRequest;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class FriendRequestController extends Controller
      */
     public function index()
     {
-        return FriendRequest::all();
+        return response()->json(FriendRequestResource::collection(FriendRequest::all()));
     }
     /**
      * @OA\Get(
@@ -42,7 +43,7 @@ class FriendRequestController extends Controller
         try {
             $requests=FriendRequest::where('request_to',$uid)->get();
             if ($requests->count() > 0) {
-                return response()->json(['success'=>true,'data'=>$requests],200);
+                return response()->json(['success'=>true,'data'=>FriendRequestResource::collection($requests)],200);
             }else{
                 return response()->json(['success'=>false,'data'=>null],200);
             }
@@ -114,7 +115,7 @@ class FriendRequestController extends Controller
      */
     public function show(FriendRequest $friendRequest)
     {
-        return $friendRequest;
+        return FriendRequestResource::make($friendRequest);
     }
 
     /**
@@ -146,13 +147,13 @@ class FriendRequestController extends Controller
         try {
             if($friendRequest->request_to==$uid && $friendRequest->status=='pending'){
                 $friendRequest->update(['status'=>'accepted']);
-                FriendList::create(
+                $confirm=FriendList::create(
                     ['user_id'=>$uid,'friend_id'=>$friendRequest->request_from]
                 );
                 $friendRequest->delete();
-                return response()->json(['status'=>'success','message'=>'Friend request has been confirmed'],200);
+                return response()->json(['status'=>'success','message'=>'Friend request has been confirmed','data'=>FriendRequestResource::make($confirm)],200);
             }else{
-                return response()->json(['status'=>'error','message'=>'You cannot sent request to yourself'],200);
+                return response()->json(['status'=>'error','message'=>'You cannot confirm this request'],200);
             }
         }catch (\Exception $exception){
             return response()->json(['status'=>'error','message'=>$exception->getMessage()],400);

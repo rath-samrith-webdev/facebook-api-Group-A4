@@ -17,7 +17,7 @@ class CommentResource extends JsonResource
         return [
             'id'=>$this->id,
             'context'=>$this->text,
-            'user'=>UserResource::make($this->user),
+            'user'=>UserDetail::make($this->user),
             'replies'=>ReplyResource::collection($this->replies()->get())
         ];
     }

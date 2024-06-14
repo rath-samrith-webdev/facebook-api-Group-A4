@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FriendListResource;
 use App\Models\FriendList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ class FriendListController extends Controller
      */
     public function index()
     {
-        return response()->json(['success' => true, 'data' => FriendList::all()],200);
+        return response()->json(['success' => true, 'data' => FriendListResource::collection(FriendList::all())],200);
     }
 
     /**
@@ -25,8 +26,8 @@ class FriendListController extends Controller
         $data=$request->all();
         $data['user_id']=$uid;
         try {
-            FriendList::create($data);
-            return response()->json(['success' => true, 'data' => FriendList::all()],201);
+            $friend=FriendList::create($data);
+            return response()->json(['success' => true, 'data' => FriendListResource::make($friend)],201);
         }catch (\Exception $exception){
             return response()->json(['success' => false, 'data' => $exception->getMessage()],400);
         }
@@ -56,7 +57,7 @@ class FriendListController extends Controller
         try {
             if($friendList->user_id==$uid){
                 $friendList->delete();
-                return response()->json(['success' => true, 'data' => FriendList::all()],200);
+                return response()->json(['success' => true, 'data' => FriendListResource::collection(FriendList::all())],200);
             }else{
                 return response()->json(['success' => false, 'data' => 'You are not authorized to delete this list'], 403);
             }

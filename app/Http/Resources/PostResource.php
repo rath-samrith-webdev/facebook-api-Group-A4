@@ -21,7 +21,7 @@ class PostResource extends JsonResource
             'post_by'=>UserDetail::make($this->user),
             'likes_count'=>$this->likes()->get()->count(),
             'likes'=>LikeResource::collection($this->likes()->get()),
-            'comments'=>$this->comments()->get()
+            'comments'=>CommentResource::collection($this->comments()->get())
         ];
     }
 }

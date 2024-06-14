@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ReplyResource extends JsonResource
+class FriendRequestResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +16,7 @@ class ReplyResource extends JsonResource
     {
         return [
             'id'=>$this->id,
-            'context'=>$this->text,
-            'user'=>UserDetail::make($this->user)
+            'requester'=>UserDetail::make($this->user)
         ];
     }
 }
