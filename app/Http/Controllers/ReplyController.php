@@ -17,7 +17,26 @@ class ReplyController extends Controller
     {
         return ReplyResource::collection(Reply::all());
     }
-
+    /**
+     * @OA\Get(
+     *     path="/api/replies/my-replies",
+     *     tags={"Show User's Replies"},
+     *     summary="Show User's Replies",
+     *     description="Show User's Replies",
+     *     operationId="show user's Replies",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function myReplies()
     {
         $uid=Auth::id();
@@ -31,6 +50,38 @@ class ReplyController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     */
+    /**
+     * @OA\Post(
+     *     path="/api/replies/create",
+     *     tags={"Add new Replies"},
+     *     summary="Add new Replies",
+     *     description="Add new Replies",
+     *     operationId="add new replies",
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"text","comment_id"},
+     *                  @OA\Property(property="text",type="text"),
+     *                  @OA\Property(property="comment_id",type="integer"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful created comment",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
      */
     public function store(StoreReplyRequest $request)
     {
@@ -64,6 +115,48 @@ class ReplyController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
+    /**
+     * @OA\Put(
+     *     path="/api/replies/update/{reply}",
+     *     tags={"Update User Replies"},
+     *     summary="Update User Replies",
+     *     description="Update User Replies",
+     *     operationId="update user replies",
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *            name="comment",
+     *            in="path",
+     *            description="ID of the reply to update",
+     *            required=true,
+     *            @OA\Schema(
+     *                type="integer",
+     *                format="int64"
+     *            )
+     *     ),
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"text"},
+     *                  @OA\Property(property="text",type="text"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated Replies",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function update(UpdateReplyRequest $request, Reply $reply)
     {
         $user_id=Auth::id();
@@ -79,6 +172,36 @@ class ReplyController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     */
+    /**
+     * @OA\Delete(
+     *     path="/api/replies/delete/{reply}",
+     *     tags={"Delete User Replies"},
+     *     summary="Delete User Replies",
+     *     description="Delete User Replies",
+     *     operationId="delete user replies",
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *           name="comment",
+     *           in="path",
+     *           description="ID of the replies to delete",
+     *           required=true,
+     *           @OA\Schema(
+     *               type="integer",
+     *               format="int64"
+     *           )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful Deleted Replies",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
      */
     public function destroy(Reply $reply)
     {

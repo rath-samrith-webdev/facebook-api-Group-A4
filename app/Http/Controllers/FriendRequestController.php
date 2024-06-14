@@ -16,7 +16,26 @@ class FriendRequestController extends Controller
     {
         return FriendRequest::all();
     }
-
+    /**
+     * @OA\Get(
+     *     path="/api/friends/request/my-friend-request",
+     *     tags={"Personal Friend Request"},
+     *     summary="Personal Friend Request",
+     *     description="Personal Friend Request",
+     *     operationId="personal friend request",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function myFriendRequest()
     {
         $uid = Auth::id();
@@ -34,6 +53,38 @@ class FriendRequestController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     */
+
+    /**
+     * @OA\Post(
+     *     path="/api/friends/request/add",
+     *     tags={"Add new Friend Request"},
+     *     summary="Add new Friend Request",
+     *     description="Add new Friend Request",
+     *     operationId="add new friend request",
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"request_to"},
+     *                  @OA\Property(property="text",type="integer"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful created comment",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -67,22 +118,34 @@ class FriendRequestController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(FriendRequest $friendRequest)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function confirm(Request $request, FriendRequest $friendRequest)
+    /**
+     * @OA\Put(
+     *     path="/api/friends/request/confirm/{friendrequest}",
+     *     tags={"Confirm new Friend Request"},
+     *     summary="Confirm new Friend Request",
+     *     description="Confirm new Friend Request",
+     *     operationId="confirm new friend request",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful confirm friend request",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
+    public function confirm(FriendRequest $friendRequest)
     {
         $uid=Auth::id();
         try {
             if($friendRequest->request_to==$uid && $friendRequest->status=='pending'){
-                $friendRequest->update(['status'=>$request->get('status')]);
+                $friendRequest->update(['status'=>'accepted']);
                 FriendList::create(
                     ['user_id'=>$uid,'friend_id'=>$friendRequest->request_from]
                 );
@@ -95,6 +158,26 @@ class FriendRequestController extends Controller
             return response()->json(['status'=>'error','message'=>$exception->getMessage()],400);
         }
     }
+    /**
+     * @OA\Put(
+     *     path="/api/friends/request/decline/{friendrequest}",
+     *     tags={"Decline Friend Request"},
+     *     summary="Decline Friend Request",
+     *     description="Decline Friend Request",
+     *     operationId="decline friend request",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful decline friend request",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function decline(FriendRequest $friendRequest)
     {
         $uid=Auth::id();
@@ -112,6 +195,27 @@ class FriendRequestController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     */
+
+    /**
+     * @OA\Delete(
+     *     path="/api/friends/unfriend/{friends}",
+     *     tags={"Unfriend A User"},
+     *     summary="Unfriend a user",
+     *     description="Unfriend A User",
+     *     operationId="unfriend a user",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful cancel friend request",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
      */
     public function destroy(FriendRequest $friendRequest)
     {

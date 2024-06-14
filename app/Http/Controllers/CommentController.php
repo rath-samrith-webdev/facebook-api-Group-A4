@@ -25,6 +25,27 @@ class CommentController extends Controller
             return response()->json(['error' => 'Comment is not found'], 500);
         }
     }
+    /**
+     * @OA\Get(
+     *     path="/api/comments/my-comments",
+     *     tags={"Show User's Comments"},
+     *     summary="Show User's Comments",
+     *     description="Show User's Comments",
+     *     operationId="show user's comments",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
+
     public function myComments(): JsonResponse
     {
         $uid=Auth::id();
@@ -38,6 +59,39 @@ class CommentController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     */
+
+    /**
+     * @OA\Post(
+     *     path="/api/comments/create",
+     *     tags={"Add new Comment"},
+     *     summary="Add new Comment",
+     *     description="Add new Comment",
+     *     operationId="add new comment",
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"text","post_id"},
+     *                  @OA\Property(property="text",type="text"),
+     *                  @OA\Property(property="post_id",type="integer"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful created comment",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
      */
     public function store(StoreCommentRequest $request): JsonResponse
     {
@@ -66,6 +120,48 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
+    /**
+     * @OA\Put(
+     *     path="/api/comments/update/{comment}",
+     *     tags={"Update User Comment"},
+     *     summary="Update User Comment",
+     *     description="Update User Comment",
+     *     operationId="update user comment",
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *            name="comment",
+     *            in="path",
+     *            description="ID of the comment to delete",
+     *            required=true,
+     *            @OA\Schema(
+     *                type="integer",
+     *                format="int64"
+     *            )
+     *     ),
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"text"},
+     *                  @OA\Property(property="text",type="text"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function update(UpdateCommentRequest $request, Comment $comment): JsonResponse
     {
         $user=Auth::user();
@@ -85,6 +181,37 @@ class CommentController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     */
+
+    /**
+     * @OA\Delete(
+     *     path="/api/comments/delete/{comment}",
+     *     tags={"Delete User Comment"},
+     *     summary="Delete User Comment",
+     *     description="Delete User Comment",
+     *     operationId="delete user comment",
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *           name="comment",
+     *           in="path",
+     *           description="ID of the comment to delete",
+     *           required=true,
+     *           @OA\Schema(
+     *               type="integer",
+     *               format="int64"
+     *           )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
      */
     public function destroy(Comment $comment): JsonResponse
     {

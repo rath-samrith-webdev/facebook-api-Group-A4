@@ -33,6 +33,38 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    /**
+     * @OA\Post(
+     *     path="/api/posts/create",
+     *     tags={"Create Post"},
+     *     summary="Create Post",
+     *     description="Create Post",
+     *     operationId="create post",
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"text","image[]"},
+     *                  @OA\Property(property="text",type="text"),
+     *                  @OA\Property(property="image[]",type="file"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful created post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function store(Request $request)
     {
         $images = $request->image?$request->image:null;
@@ -59,11 +91,26 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post): JsonResponse
-    {
-        return response()->json($post);
-    }
-
+    /**
+     * @OA\Get(
+     *     path="/api/posts/my-posts",
+     *     tags={"Personal Posts"},
+     *     summary="Personal Posts",
+     *     description="Show Users's Posts",
+     *     operationId="show user posts",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function myPosts(): JsonResponse
     {
         $uid = Auth::id();
@@ -76,15 +123,48 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
-    {
-        // Not typically used in API controllers.
-    }
-
-    /**
      * Update the specified resource in storage.
+     */
+    /**
+     * @OA\Put(
+     *     path="/api/posts/update/{post}",
+     *     tags={"Update Post"},
+     *     summary="Update Post Posts",
+     *     description="Update Users's Posts",
+     *     operationId="update user posts",
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *          name="post",
+     *          in="path",
+     *          description="ID of the post to update",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *          )
+     *      ),
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"text"},
+     *                  @OA\Property(property="text",type="string"),
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
      */
     public function update(UpdatePostRequest $request, Post $post):JsonResponse
     {
@@ -105,6 +185,36 @@ class PostController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     */
+    /**
+     * @OA\Delete(
+     *     path="/api/posts/delete/{post}",
+     *     tags={"Delete Post"},
+     *     summary="Delete Post",
+     *     description="Delete User's Posts",
+     *     operationId="delete user posts",
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *          name="post",
+     *          in="path",
+     *          description="ID of the post to delete",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *          )
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful delete post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
      */
     public function destroy(Post $post): JsonResponse
     {

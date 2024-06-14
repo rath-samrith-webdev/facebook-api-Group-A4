@@ -22,6 +22,43 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+
+    /**
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     operationId="Log in",
+     *     tags={"Log In"},
+     *     summary="Log In",
+     *     description="Authenticate",
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"email","password"},
+     *                 @OA\Property(property="email",type="email"),
+     *                 @OA\Property(property="password",type="string"),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successfully Logged in",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="422",
+     *         description="Unprocessable Entity",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent()
+     *     ),
+     * )
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->only(['email', 'password']);
@@ -32,6 +69,31 @@ class AuthController extends Controller
         $token = $user->createToken('token')->plainTextToken;
         return response()->json(['success' => true, 'message' => 'You have been log in', 'data' => UserDetail::make($user), 'token' => $token], 200);
     }
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     operationId="Log out",
+     *     tags={"Log out"},
+     *     summary="Log out",
+     *     security={{"bearer":{}}},
+     *     description="Authenticate",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successfully Logged in",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="422",
+     *         description="Unprocessable Entity",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent()
+     *     ),
+     * )
+     */
     public function logout(LoginRequest $request): JsonResponse
     {
         $user = Auth::user();
@@ -39,6 +101,40 @@ class AuthController extends Controller
         auth()->guard('web')->logout();
         return response()->json(['success' => true, 'message' => 'You have been logged out']);
     }
+    /**
+     * @OA\Post(
+     *     path="/api/auth/register",
+     *     tags={"Register User"},
+     *     summary="Register User",
+     *     description="Register User",
+     *     operationId="register users",
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"name","email","password","password_confirmation"},
+     *                  @OA\Property(property="name",type="text"),
+     *                  @OA\Property(property="email",type="email"),
+     *                  @OA\Property(property="password",type="password"),
+     *                  @OA\Property(property="password_confirmation",type="password")
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function register(RegiterRequest $request):JsonResponse
     {
         $newUser = $request->validated();
@@ -49,12 +145,64 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => 'User Registration Failed!', 'error' => $e], 500);
         }
     }
+
+    /**
+     * @OA\Delete(
+     *     path="api/user/remove",
+     *     tags={"Remove User"},
+     *     summary="Remove User",
+     *     description="Remove User",
+     *     operationId="remove users",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function remove(Request $request): JsonResponse
     {
         $user = Auth::user();
         $user->delete();
         return response()->json(['success' => true, 'data' => UserDetail::make($user)], 200);
     }
+    /**
+     * @OA\Post(
+     *     path="/api/user/profile-image/update",
+     *     tags={"Update User Profile Image"},
+     *     summary="Update User Profile Image",
+     *     description="Update User Profile Image",
+     *     operationId="update user profile image",
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"image"},
+     *                  @OA\Property(property="image",type="file"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function updateProfileImage(ProfileImage $request):JsonResponse
     {
         $user = Auth::user();
@@ -74,6 +222,39 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => 'Profile image update failed!', 'error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/user/profile-data/update",
+     *     tags={"Update User Profile Data"},
+     *     summary="Update User Profile Data",
+     *     description="Update User Profile Data",
+     *     operationId="update user profile Data",
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"name","email"},
+     *                  @OA\Property(property="name",type="text"),
+     *                  @OA\Property(property="email",type="email"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public  function updateProfileData(UpdateProfileDataRequest $request):JsonResponse
     {
         $user = Auth::user();
@@ -85,11 +266,62 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => 'Profile data update failed!', 'error' => $e->getMessage()], 500);
         }
     }
+    /**
+     * @OA\Get(
+     *     path="/api/me",
+     *     tags={"Show User Info"},
+     *     summary="Show User Info",
+     *     description="Show User Info",
+     *     operationId="show user info",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function me(Request $request): JsonResponse
     {
         $user = Auth::user();
         return response()->json(['success' => true, 'data' => UserResource::make($user)], 200);
     }
+    /**
+     * @OA\Post(
+     *     path="/api/auth/forget-password",
+     *     tags={"Forget user password"},
+     *     summary="Forget user password",
+     *     description="Forget user password",
+     *     operationId="forget user password",
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"email"},
+     *                  @OA\Property(property="email",type="email"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function forgetPassword(ForgotPasswordRequest $request):JsonResponse
     {
         $data=$request->validated();
@@ -111,6 +343,40 @@ class AuthController extends Controller
             return response()->json(['success'=>false,'message'=>$e->getMessage()],404);
         }
     }
+    /**
+     * @OA\Post(
+     *     path="api/auth/password/reset",
+     *     tags={"Reset Password"},
+     *     summary="Reset User Password",
+     *     description="Reset User Password",
+     *     operationId="reset user password",
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(),
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  required={"email","reset_token","password","password_confirmation"},
+     *                  @OA\Property(property="email",type="email"),
+     *                  @OA\Property(property="reset_token",type="text"),
+     *                  @OA\Property(property="password",type="password"),
+     *                  @OA\Property(property="password_confirmation",type="password"),
+     *              ),
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful updated post",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function resetPassword(ResetPasswordRequest $request):JsonResponse
     {
         $reset_request=$request->validated();

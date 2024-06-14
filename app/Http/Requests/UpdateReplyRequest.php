@@ -23,7 +23,6 @@ class UpdateReplyRequest extends FormRequest
     {
         return [
             'text' => 'required|string',
-            'comment_id' => 'required|integer|exists:comments,id',
             'user_id'=>'integer|exists:users,id'
         ];
     }
