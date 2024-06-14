@@ -38,11 +38,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('friends')->group(function () {
        Route::get('/list',[FriendListController::class, 'index']);
-       Route::post('/create',[FriendListController::class, 'store']);
        Route::delete('/delete/{friends}',[FriendListController::class, 'destroy']);
        Route::get('/request/all',[FriendRequestController::class, 'index']);
-        Route::get('/request/show/{friendRequest}',[FriendRequestController::class, 'show']);
-       Route::put('/request/confirm/{friendRequest}',[FriendRequestController::class, 'update'])   ;
+       Route::get('/request/my-friend-request',[FriendRequestController::class, 'myFriendRequest']);
+       Route::get('/request/show/{friendRequest}',[FriendRequestController::class, 'show']);
+       Route::post('/request/add',[FriendRequestController::class, 'store']);
+       Route::put('/request/confirm/{friendRequest}',[FriendRequestController::class, 'confirm']);
+       Route::put('/request/decline/{friendRequest}',[FriendRequestController::class, 'decline']);
     });
 
     Route::prefix('posts')->group(function () {
