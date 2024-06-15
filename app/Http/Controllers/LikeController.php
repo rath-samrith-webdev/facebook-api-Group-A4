@@ -135,7 +135,7 @@ class LikeController extends Controller
      *     operationId="update reactions",
      *     security={{"bearer":{}}},
      *     @OA\Parameter(
-     *          name="post",
+     *          name="like",
      *          in="path",
      *          description="ID of the like to update",
      *          required=true,
@@ -197,7 +197,7 @@ class LikeController extends Controller
      *     operationId="delete reactions",
      *     security={{"bearer":{}}},
      *     @OA\Parameter(
-     *          name="post",
+     *          name="like",
      *          in="path",
      *          description="ID of the like to delete",
      *          required=true,

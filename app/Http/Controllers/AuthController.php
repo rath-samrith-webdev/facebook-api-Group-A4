@@ -135,7 +135,7 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function register(RegiterRequest $request):JsonResponse
+    public function register(RegiterRequest $request): JsonResponse
     {
         $newUser = $request->validated();
         try {
@@ -173,7 +173,7 @@ class AuthController extends Controller
         return response()->json(['success' => true, 'data' => UserDetail::make($user)], 200);
     }
     /**
-     * @OA\Post(
+     * @OA\Put(
      *     path="/api/user/profile-image/update",
      *     tags={"Update User Profile Image"},
      *     summary="Update User Profile Image",
@@ -203,28 +203,28 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function updateProfileImage(ProfileImage $request):JsonResponse
+    public function updateProfileImage(ProfileImage $request): JsonResponse
     {
         $user = Auth::user();
         $data = $request->validated();
         $image = $data['image'];
         $ext = $image->getClientOriginalExtension();
-        $imageName = 'profile-'.$user->id.'-'.time() . '.' . $ext;
+        $imageName = 'profile-' . $user->id . '-' . time() . '.' . $ext;
         try {
-            $path=public_path('/') . '/upload/profiles/user-' . $user->id .'/'. $user->image;
-            if(File::exists($path)){
+            $path = public_path('/') . '/upload/profiles/user-' . $user->id . '/' . $user->image;
+            if (File::exists($path)) {
                 unlink($path);
             }
             $user->update(['image' => $imageName]);
-            $image->move(public_path('/') . '/upload/profiles/user-'.$user->id, $imageName);
-            return response()->json(['success' => true, 'message' => 'Profile image has been updated', 'data' =>UserDetail::make($user)], 200);
+            $image->move(public_path('/') . '/upload/profiles/user-' . $user->id, $imageName);
+            return response()->json(['success' => true, 'message' => 'Profile image has been updated', 'data' => UserDetail::make($user)], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Profile image update failed!', 'error' => $e->getMessage()], 500);
         }
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *     path="/api/user/profile-data/update",
      *     tags={"Update User Profile Data"},
      *     summary="Update User Profile Data",
@@ -255,14 +255,14 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public  function updateProfileData(UpdateProfileDataRequest $request):JsonResponse
+    public  function updateProfileData(UpdateProfileDataRequest $request): JsonResponse
     {
         $user = Auth::user();
         $data = $request->validated();
         try {
             $user->update($data);
             return response()->json(['success' => true, 'message' => 'Profile data has been updated', 'data' => UserDetail::make($user)], 200);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Profile data update failed!', 'error' => $e->getMessage()], 500);
         }
     }
@@ -322,25 +322,25 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function forgetPassword(ForgotPasswordRequest $request):JsonResponse
+    public function forgetPassword(ForgotPasswordRequest $request): JsonResponse
     {
-        $data=$request->validated();
-        $email=$data['email'];
+        $data = $request->validated();
+        $email = $data['email'];
         try {
-            $user=User::where('email',$email)->first();
-            if($user){
-                $remember_token=Str::random(60);
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                $remember_token = Str::random(60);
                 DB::table('password_reset_tokens')->insert([
                     'email' => $email,
                     'token' => $remember_token,
-                    'created_at'=>Carbon::now()
+                    'created_at' => Carbon::now()
                 ]);
-            }else{
+            } else {
                 return response()->json(['success' => false, 'message' => 'User not found!'], 404);
             }
-            return response()->json(['success'=>true,'data'=>$email,'reset_token'=>$remember_token],200);
-        }catch (\Exception $e){
-            return response()->json(['success'=>false,'message'=>$e->getMessage()],404);
+            return response()->json(['success' => true, 'data' => $email, 'reset_token' => $remember_token], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 404);
         }
     }
     /**
@@ -377,23 +377,22 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function resetPassword(ResetPasswordRequest $request):JsonResponse
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        $reset_request=$request->validated();
-        $token=$reset_request['reset_token'];
-        $email=$reset_request['email'];
+        $reset_request = $request->validated();
+        $token = $reset_request['reset_token'];
+        $email = $reset_request['email'];
         try {
-            $tokenData = DB::table('password_reset_tokens')->where('token',$token)->first();
-            $user=User::where('email',$email)->first();
-            if(!$user){
-                return response()->json(['success'=>false,'message'=>'Invalid token'],404);
+            $tokenData = DB::table('password_reset_tokens')->where('token', $token)->first();
+            $user = User::where('email', $email)->first();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'Invalid token'], 404);
             }
-            $user->update(['password'=>Hash::make($reset_request['password'])]);
-            DB::table('password_reset_tokens')->where('token',$token)->delete();
-            return response()->json(['success'=>true,'new_password'=>$request->password],200);
-        }catch (\Exception $e){
-            return response()->json(['success'=>false,'message'=>$e->getMessage()],404);
+            $user->update(['password' => Hash::make($reset_request['password'])]);
+            DB::table('password_reset_tokens')->where('token', $token)->delete();
+            return response()->json(['success' => true, 'new_password' => $request->password], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 404);
         }
-
     }
 }

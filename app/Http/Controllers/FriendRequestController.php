@@ -41,14 +41,14 @@ class FriendRequestController extends Controller
     {
         $uid = Auth::id();
         try {
-            $requests=FriendRequest::where('request_to',$uid)->get();
+            $requests = FriendRequest::where('request_to', $uid)->get();
             if ($requests->count() > 0) {
-                return response()->json(['success'=>true,'data'=>FriendRequestResource::collection($requests)],200);
-            }else{
-                return response()->json(['success'=>false,'data'=>null],200);
+                return response()->json(['success' => true, 'data' => FriendRequestResource::collection($requests)], 200);
+            } else {
+                return response()->json(['success' => false, 'data' => null], 200);
             }
-        }catch (\Exception $e){
-            return response()->json(['success'=>false,'data'=>null,'message'=>$e->getMessage()],200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'data' => null, 'message' => $e->getMessage()], 200);
         }
     }
 
@@ -90,23 +90,23 @@ class FriendRequestController extends Controller
     public function store(Request $request)
     {
         $uid = Auth::id();
-        $data=$request->validate([
-            'request_from'=>'exists:users,id',
-            'request_to'=>'required|exists:users,id',
+        $data = $request->validate([
+            'request_from' => 'exists:users,id',
+            'request_to' => 'required|exists:users,id',
         ]);
-        $request['request_from']=$uid;
-        try{
-            if($request->get('request_to')==$uid){
-                return response()->json(['success'=>false ,'message'=>'You cannot sent request to yourself'],200);
-            }else{
+        $request['request_from'] = $uid;
+        try {
+            if ($request->get('request_to') == $uid) {
+                return response()->json(['success' => false, 'message' => 'You cannot sent request to yourself'], 200);
+            } else {
                 FriendRequest::create([
-                    'request_from'=>$uid,
-                    'request_to'=>$data['request_to'],
+                    'request_from' => $uid,
+                    'request_to' => $data['request_to'],
                 ]);
-                return response()->json(['success'=>true,'data'=>$request->all()],200);
+                return response()->json(['success' => true, 'data' => $request->all()], 200);
             }
-        }catch(\Exception $e){
-            return response()->json(['success'=>false,'error'=>$e->getMessage()],500);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -129,6 +129,16 @@ class FriendRequestController extends Controller
      *     description="Confirm new Friend Request",
      *     operationId="confirm new friend request",
      *     security={{"bearer":{}}},
+     *      @OA\Parameter(
+     *          name="friendrequest",
+     *          in="path",
+     *          description="ID of the like to confirm",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *          )
+     *     ),
      *     @OA\Response(
      *         response=201,
      *         description="successful confirm friend request",
@@ -143,20 +153,20 @@ class FriendRequestController extends Controller
      */
     public function confirm(FriendRequest $friendRequest)
     {
-        $uid=Auth::id();
+        $uid = Auth::id();
         try {
-            if($friendRequest->request_to==$uid && $friendRequest->status=='pending'){
-                $friendRequest->update(['status'=>'accepted']);
-                $confirm=FriendList::create(
-                    ['user_id'=>$uid,'friend_id'=>$friendRequest->request_from]
+            if ($friendRequest->request_to == $uid && $friendRequest->status == 'pending') {
+                $friendRequest->update(['status' => 'accepted']);
+                $confirm = FriendList::create(
+                    ['user_id' => $uid, 'friend_id' => $friendRequest->request_from]
                 );
                 $friendRequest->delete();
-                return response()->json(['status'=>'success','message'=>'Friend request has been confirmed','data'=>FriendRequestResource::make($confirm)],200);
-            }else{
-                return response()->json(['status'=>'error','message'=>'You cannot confirm this request'],200);
+                return response()->json(['status' => 'success', 'message' => 'Friend request has been confirmed', 'data' => FriendRequestResource::make($confirm)], 200);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'You cannot confirm this request'], 200);
             }
-        }catch (\Exception $exception){
-            return response()->json(['status'=>'error','message'=>$exception->getMessage()],400);
+        } catch (\Exception $exception) {
+            return response()->json(['status' => 'error', 'message' => $exception->getMessage()], 400);
         }
     }
     /**
@@ -167,6 +177,16 @@ class FriendRequestController extends Controller
      *     description="Decline Friend Request",
      *     operationId="decline friend request",
      *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *          name="friendrequest",
+     *          in="path",
+     *          description="ID of the like to delete",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *          )
+     *     ),
      *     @OA\Response(
      *         response=201,
      *         description="successful decline friend request",
@@ -181,16 +201,16 @@ class FriendRequestController extends Controller
      */
     public function decline(FriendRequest $friendRequest)
     {
-        $uid=Auth::id();
+        $uid = Auth::id();
         try {
-            if($friendRequest->request_to==$uid && $friendRequest->status=='pending'){
-                $friendRequest->update(['status'=>'decline']);
-                return response()->json(['status'=>'success','message'=>'Friend request has been declined'],200);
-            }else{
-                return response()->json(['status'=>'error','message'=>'Something went wrong'],400);
+            if ($friendRequest->request_to == $uid && $friendRequest->status == 'pending') {
+                $friendRequest->update(['status' => 'decline']);
+                return response()->json(['status' => 'success', 'message' => 'Friend request has been declined'], 200);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Something went wrong'], 400);
             }
-        }catch (\Exception $exception){
-            return response()->json(['status'=>'error','message'=>$exception->getMessage()],400);
+        } catch (\Exception $exception) {
+            return response()->json(['status' => 'error', 'message' => $exception->getMessage()], 400);
         }
     }
 
@@ -200,12 +220,22 @@ class FriendRequestController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/friends/unfriend/{friends}",
+     *     path="/api/friends/cancel/{friendRequest}",
      *     tags={"Unfriend A User"},
      *     summary="Unfriend a user",
      *     description="Unfriend A User",
      *     operationId="unfriend a user",
      *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *          name="friendrequest",
+     *          in="path",
+     *          description="ID of the like to delete",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *          )
+     *     ),
      *     @OA\Response(
      *         response=201,
      *         description="successful cancel friend request",
@@ -220,16 +250,16 @@ class FriendRequestController extends Controller
      */
     public function destroy(FriendRequest $friendRequest)
     {
-        $uid=Auth::id();
+        $uid = Auth::id();
         try {
-            if($friendRequest->request_from==$uid){
+            if ($friendRequest->request_from == $uid) {
                 $friendRequest->delete();
-                return response()->json(['status'=>'success','message'=>'Friend request has been deleted'],200);
-            }else{
-                return response()->json(['status'=>'error','message'=>'You cannot delete this friend request'],400);
+                return response()->json(['status' => 'success', 'message' => 'Friend request has been deleted'], 200);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'You cannot delete this friend request'], 400);
             }
-        }catch (\Exception $exception){
-            return response()->json(['status'=>'error','message'=>$exception->getMessage()],400);
+        } catch (\Exception $exception) {
+            return response()->json(['status' => 'error', 'message' => $exception->getMessage()], 400);
         }
     }
 }

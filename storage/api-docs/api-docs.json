@@ -205,7 +205,7 @@
             }
         },
         "/api/user/profile-image/update": {
-            "post": {
+            "put": {
                 "tags": [
                     "Update User Profile Image"
                 ],
@@ -258,7 +258,7 @@
             }
         },
         "/api/user/profile-data/update": {
-            "post": {
+            "put": {
                 "tags": [
                     "Update User Profile Data"
                 ],
@@ -759,6 +759,18 @@
                 "summary": "Confirm new Friend Request",
                 "description": "Confirm new Friend Request",
                 "operationId": "confirm new friend request",
+                "parameters": [
+                    {
+                        "name": "friendrequest",
+                        "in": "path",
+                        "description": "ID of the like to confirm",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "successful confirm friend request",
@@ -792,6 +804,18 @@
                 "summary": "Decline Friend Request",
                 "description": "Decline Friend Request",
                 "operationId": "decline friend request",
+                "parameters": [
+                    {
+                        "name": "friendrequest",
+                        "in": "path",
+                        "description": "ID of the like to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "successful decline friend request",
@@ -817,7 +841,7 @@
                 ]
             }
         },
-        "/api/friends/unfriend/{friends}": {
+        "/api/friends/cancel/{friendRequest}": {
             "delete": {
                 "tags": [
                     "Unfriend A User"
@@ -825,6 +849,18 @@
                 "summary": "Unfriend a user",
                 "description": "Unfriend A User",
                 "operationId": "unfriend a user",
+                "parameters": [
+                    {
+                        "name": "friendrequest",
+                        "in": "path",
+                        "description": "ID of the like to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "successful cancel friend request",
@@ -950,7 +986,7 @@
                 "operationId": "update reactions",
                 "parameters": [
                     {
-                        "name": "post",
+                        "name": "like",
                         "in": "path",
                         "description": "ID of the like to update",
                         "required": true,
@@ -1019,7 +1055,7 @@
                 "operationId": "delete reactions",
                 "parameters": [
                     {
-                        "name": "post",
+                        "name": "like",
                         "in": "path",
                         "description": "ID of the like to delete",
                         "required": true,
