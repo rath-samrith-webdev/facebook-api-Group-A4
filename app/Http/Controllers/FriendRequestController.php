@@ -20,7 +20,7 @@ class FriendRequestController extends Controller
     /**
      * @OA\Get(
      *     path="/api/friends/request/my-friend-request",
-     *     tags={"Personal Friend Request"},
+     *     tags={"Friend Requests"},
      *     summary="Personal Friend Request",
      *     description="Personal Friend Request",
      *     operationId="personal friend request",
@@ -59,7 +59,7 @@ class FriendRequestController extends Controller
     /**
      * @OA\Post(
      *     path="/api/friends/request/add",
-     *     tags={"Add new Friend Request"},
+     *     tags={"Friend Requests"},
      *     summary="Add new Friend Request",
      *     description="Add new Friend Request",
      *     operationId="add new friend request",
@@ -124,7 +124,7 @@ class FriendRequestController extends Controller
     /**
      * @OA\Put(
      *     path="/api/friends/request/confirm/{friendrequest}",
-     *     tags={"Confirm new Friend Request"},
+     *     tags={"Friend Requests"},
      *     summary="Confirm new Friend Request",
      *     description="Confirm new Friend Request",
      *     operationId="confirm new friend request",
@@ -172,7 +172,7 @@ class FriendRequestController extends Controller
     /**
      * @OA\Put(
      *     path="/api/friends/request/decline/{friendrequest}",
-     *     tags={"Decline Friend Request"},
+     *     tags={"Friend Requests"},
      *     summary="Decline Friend Request",
      *     description="Decline Friend Request",
      *     operationId="decline friend request",
@@ -221,10 +221,10 @@ class FriendRequestController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/friends/cancel/{friendRequest}",
-     *     tags={"Unfriend A User"},
-     *     summary="Unfriend a user",
-     *     description="Unfriend A User",
-     *     operationId="unfriend a user",
+     *     tags={"Friend Requests"},
+     *     summary="Remove friend request",
+     *     description="Remove friend request",
+     *     operationId="remove friend request",
      *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *          name="friendrequest",

@@ -20,7 +20,7 @@ class PostController extends Controller
     public function index(): JsonResponse
     {
         $posts = Post::all();
-        return response()->json(['success'=>true, 'posts'=>PostResource::collection($posts)],200);
+        return response()->json(['success' => true, 'posts' => PostResource::collection($posts)], 200);
     }
     /**
      * Show the form for creating a new resource.
@@ -36,7 +36,7 @@ class PostController extends Controller
     /**
      * @OA\Post(
      *     path="/api/posts/create",
-     *     tags={"Create Post"},
+     *     tags={"Post"},
      *     summary="Create Post",
      *     description="Create Post",
      *     operationId="create post",
@@ -67,23 +67,23 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $images = $request->image?$request->image:null;
-        try{
-            $post=Post::create([
-                'text'=>$request->text,
-                'user_id'=>Auth::id()
+        $images = $request->image ? $request->image : null;
+        try {
+            $post = Post::create([
+                'text' => $request->text,
+                'user_id' => Auth::id()
             ]);
             $post_id = $post->id;
             foreach ($images as $image) {
-                $imgName=rand().'.'.$image->getClientOriginalExtension();
+                $imgName = rand() . '.' . $image->getClientOriginalExtension();
                 Image::create([
                     'image_name' => $imgName,
                     'post_id' => $post_id
                 ]);
-                $image->move(public_path('/').'upload/user-'.Auth::id().'/posts/post-'.$post->id, $imgName);
+                $image->move(public_path('/') . 'upload/user-' . Auth::id() . '/posts/post-' . $post->id, $imgName);
             }
-            return response()->json(['success'=>true, 'post'=>PostResource::make($post)],200);
-        }catch (\Exception $exception){
+            return response()->json(['success' => true, 'post' => PostResource::make($post)], 200);
+        } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 400);
         }
     }
@@ -94,7 +94,7 @@ class PostController extends Controller
     /**
      * @OA\Get(
      *     path="/api/posts/my-posts",
-     *     tags={"Personal Posts"},
+     *     tags={"Posts"},
      *     summary="Personal Posts",
      *     description="Show Users's Posts",
      *     operationId="show user posts",
@@ -114,10 +114,10 @@ class PostController extends Controller
     public function myPosts(): JsonResponse
     {
         $uid = Auth::id();
-        $posts=Post::where('user_id', $uid)->get();
-        if($posts->count() > 0){
+        $posts = Post::where('user_id', $uid)->get();
+        if ($posts->count() > 0) {
             return response()->json(['success' => true, 'data' => $posts], 200);
-        }else{
+        } else {
             return response()->json(['success' => false, 'data' => []], 200);
         }
     }
@@ -128,7 +128,7 @@ class PostController extends Controller
     /**
      * @OA\Put(
      *     path="/api/posts/update/{post}",
-     *     tags={"Update Post"},
+     *     tags={"Post"},
      *     summary="Update Post Posts",
      *     description="Update Users's Posts",
      *     operationId="update user posts",
@@ -166,19 +166,19 @@ class PostController extends Controller
      *     )
      * )
      */
-    public function update(UpdatePostRequest $request, Post $post):JsonResponse
+    public function update(UpdatePostRequest $request, Post $post): JsonResponse
     {
         $validated = $request->validated();
-        $uid=Auth::id();
-        $validated['user_id']=$uid;
+        $uid = Auth::id();
+        $validated['user_id'] = $uid;
         try {
-            if($post->user_id==$uid){
+            if ($post->user_id == $uid) {
                 $post->update($validated);
                 return response()->json(['success' => true, 'data' => $post], 200);
-            }else{
+            } else {
                 return response()->json(['success' => false, 'data' => 'You are not authorized'], 401);
             }
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
@@ -189,7 +189,7 @@ class PostController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/posts/delete/{post}",
-     *     tags={"Delete Post"},
+     *     tags={"Post"},
      *     summary="Delete Post",
      *     description="Delete User's Posts",
      *     operationId="delete user posts",
@@ -218,15 +218,15 @@ class PostController extends Controller
      */
     public function destroy(Post $post): JsonResponse
     {
-        $uid=Auth::id();
+        $uid = Auth::id();
         try {
-            if($post->user_id==$uid){
+            if ($post->user_id == $uid) {
                 $post->delete();
                 return response()->json(['success' => true, 'data' => $post], 200);
-            }else{
+            } else {
                 return response()->json(['success' => false, 'data' => 'You are not authorized'], 401);
             }
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }

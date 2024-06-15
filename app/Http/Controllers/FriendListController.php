@@ -14,7 +14,7 @@ class FriendListController extends Controller
      */
     public function index()
     {
-        return response()->json(['success' => true, 'data' => FriendListResource::collection(FriendList::all())],200);
+        return response()->json(['success' => true, 'data' => FriendListResource::collection(FriendList::all())], 200);
     }
 
     /**
@@ -22,14 +22,14 @@ class FriendListController extends Controller
      */
     public function store(Request $request)
     {
-        $uid=Auth::id();
-        $data=$request->all();
-        $data['user_id']=$uid;
+        $uid = Auth::id();
+        $data = $request->all();
+        $data['user_id'] = $uid;
         try {
-            $friend=FriendList::create($data);
-            return response()->json(['success' => true, 'data' => FriendListResource::make($friend)],201);
-        }catch (\Exception $exception){
-            return response()->json(['success' => false, 'data' => $exception->getMessage()],400);
+            $friend = FriendList::create($data);
+            return response()->json(['success' => true, 'data' => FriendListResource::make($friend)], 201);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'data' => $exception->getMessage()], 400);
         }
     }
     /**
@@ -51,18 +51,48 @@ class FriendListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    /**
+     * @OA\Delete(
+     *     path="/api/friends/unfriend/{friends}",
+     *     tags={"Unfriends"},
+     *     summary="Unfriend from user",
+     *     description="Unfriend from user",
+     *     operationId="Unfriend from user",
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *          name="friendrequest",
+     *          in="path",
+     *          description="ID of the like to delete",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful cancel friend request",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthennticated",
+     *         @OA\JsonContent()
+     *     )
+     * )
+     */
     public function destroy(FriendList $friendList)
     {
-        $uid=Auth::id();
+        $uid = Auth::id();
         try {
-            if($friendList->user_id==$uid){
+            if ($friendList->user_id == $uid) {
                 $friendList->delete();
-                return response()->json(['success' => true, 'data' => FriendListResource::collection(FriendList::all())],200);
-            }else{
+                return response()->json(['success' => true, 'data' => FriendListResource::collection(FriendList::all())], 200);
+            } else {
                 return response()->json(['success' => false, 'data' => 'You are not authorized to delete this list'], 403);
             }
-        }catch (\Exception $exception){
-            return response()->json(['success' => false, 'data' => $exception->getMessage()],400);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'data' => $exception->getMessage()], 400);
         }
     }
 }

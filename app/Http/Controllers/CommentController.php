@@ -19,8 +19,8 @@ class CommentController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $comments=Comment::all();
-            return response()->json(['success' => true, 'comments' => CommentResource::collection($comments)],200);
+            $comments = Comment::all();
+            return response()->json(['success' => true, 'comments' => CommentResource::collection($comments)], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Comment is not found'], 500);
         }
@@ -28,7 +28,7 @@ class CommentController extends Controller
     /**
      * @OA\Get(
      *     path="/api/comments/my-comments",
-     *     tags={"Show User's Comments"},
+     *     tags={"Comments"},
      *     summary="Show User's Comments",
      *     description="Show User's Comments",
      *     operationId="show user's comments",
@@ -48,10 +48,10 @@ class CommentController extends Controller
 
     public function myComments(): JsonResponse
     {
-        $uid=Auth::id();
+        $uid = Auth::id();
         try {
-            $comments=Comment::where('user_id',$uid)->get();
-            return response()->json(['success' => true, 'comments' => CommentResource::collection($comments)],200);
+            $comments = Comment::where('user_id', $uid)->get();
+            return response()->json(['success' => true, 'comments' => CommentResource::collection($comments)], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Comment is not found'], 500);
         }
@@ -64,7 +64,7 @@ class CommentController extends Controller
     /**
      * @OA\Post(
      *     path="/api/comments/create",
-     *     tags={"Add new Comment"},
+     *     tags={"Comments"},
      *     summary="Add new Comment",
      *     description="Add new Comment",
      *     operationId="add new comment",
@@ -99,7 +99,7 @@ class CommentController extends Controller
             $validatedData = $request->validated();
             $validatedData['user_id'] = Auth::id();
             $comment = Comment::create($validatedData);
-            return response()->json(['success'=>true,'data'=>CommentResource::make($comment)], 201);
+            return response()->json(['success' => true, 'data' => CommentResource::make($comment)], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Comment is not found'], 500);
         }
@@ -111,7 +111,7 @@ class CommentController extends Controller
     public function show(Comment $comment): JsonResponse
     {
         try {
-            return response()->json(['success' => true, 'comment' => new CommentResource($comment)],200);
+            return response()->json(['success' => true, 'comment' => new CommentResource($comment)], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Comment is not found'], 404);
         }
@@ -124,7 +124,7 @@ class CommentController extends Controller
     /**
      * @OA\Put(
      *     path="/api/comments/update/{comment}",
-     *     tags={"Update User Comment"},
+     *     tags={"Comments"},
      *     summary="Update User Comment",
      *     description="Update User Comment",
      *     operationId="update user comment",
@@ -164,15 +164,15 @@ class CommentController extends Controller
      */
     public function update(UpdateCommentRequest $request, Comment $comment): JsonResponse
     {
-        $user=Auth::user();
+        $user = Auth::user();
         try {
-            if($comment->user_id==$user->id){
+            if ($comment->user_id == $user->id) {
                 $validatedData = $request->validated();
                 $validatedData['user_id'] = Auth::id();
                 $comment->update($validatedData);
-                return response()->json(['success'=>true,'data'=>CommentResource::make($comment)],200);
-            }else{
-                return response()->json(['error'=>'You cannot edit this comment'],403);
+                return response()->json(['success' => true, 'data' => CommentResource::make($comment)], 200);
+            } else {
+                return response()->json(['error' => 'You cannot edit this comment'], 403);
             }
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Comment is not found'], 404);
@@ -186,7 +186,7 @@ class CommentController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/comments/delete/{comment}",
-     *     tags={"Delete User Comment"},
+     *     tags={"Comments"},
      *     summary="Delete User Comment",
      *     description="Delete User Comment",
      *     operationId="delete user comment",

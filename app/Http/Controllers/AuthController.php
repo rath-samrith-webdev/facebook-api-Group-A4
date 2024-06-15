@@ -27,7 +27,7 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/auth/login",
      *     operationId="Log in",
-     *     tags={"Log In"},
+     *     tags={"Authenticate User"},
      *     summary="Log In",
      *     description="Authenticate",
      *     @OA\RequestBody(
@@ -73,7 +73,7 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/logout",
      *     operationId="Log out",
-     *     tags={"Log out"},
+     *     tags={"Authenticate User"},
      *     summary="Log out",
      *     security={{"bearer":{}}},
      *     description="Authenticate",
@@ -104,7 +104,7 @@ class AuthController extends Controller
     /**
      * @OA\Post(
      *     path="/api/auth/register",
-     *     tags={"Register User"},
+     *     tags={"Authenticate User"},
      *     summary="Register User",
      *     description="Register User",
      *     operationId="register users",
@@ -149,7 +149,7 @@ class AuthController extends Controller
     /**
      * @OA\Delete(
      *     path="api/user/remove",
-     *     tags={"Remove User"},
+     *     tags={"Authenticate User"},
      *     summary="Remove User",
      *     description="Remove User",
      *     operationId="remove users",
@@ -175,7 +175,7 @@ class AuthController extends Controller
     /**
      * @OA\Put(
      *     path="/api/user/profile-image/update",
-     *     tags={"Update User Profile Image"},
+     *     tags={"Authenticate User"},
      *     summary="Update User Profile Image",
      *     description="Update User Profile Image",
      *     operationId="update user profile image",
@@ -226,7 +226,7 @@ class AuthController extends Controller
     /**
      * @OA\Put(
      *     path="/api/user/profile-data/update",
-     *     tags={"Update User Profile Data"},
+     *     tags={"Authenticate User"},
      *     summary="Update User Profile Data",
      *     description="Update User Profile Data",
      *     operationId="update user profile Data",
@@ -269,7 +269,7 @@ class AuthController extends Controller
     /**
      * @OA\Get(
      *     path="/api/me",
-     *     tags={"Show User Info"},
+     *     tags={"Authenticate User"},
      *     summary="Show User Info",
      *     description="Show User Info",
      *     operationId="show user info",
@@ -294,7 +294,7 @@ class AuthController extends Controller
     /**
      * @OA\Post(
      *     path="/api/auth/forget-password",
-     *     tags={"Forget user password"},
+     *     tags={"Authenticate User"},
      *     summary="Forget user password",
      *     description="Forget user password",
      *     operationId="forget user password",
@@ -346,7 +346,7 @@ class AuthController extends Controller
     /**
      * @OA\Post(
      *     path="api/auth/password/reset",
-     *     tags={"Reset Password"},
+     *     tags={"Authenticate User"},
      *     summary="Reset User Password",
      *     description="Reset User Password",
      *     operationId="reset user password",

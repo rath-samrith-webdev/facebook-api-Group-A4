@@ -8,7 +8,7 @@
         "/api/auth/login": {
             "post": {
                 "tags": [
-                    "Log In"
+                    "Authenticate User"
                 ],
                 "summary": "Log In",
                 "description": "Authenticate",
@@ -68,7 +68,7 @@
         "/api/logout": {
             "post": {
                 "tags": [
-                    "Log out"
+                    "Authenticate User"
                 ],
                 "summary": "Log out",
                 "description": "Authenticate",
@@ -109,7 +109,7 @@
         "/api/auth/register": {
             "post": {
                 "tags": [
-                    "Register User"
+                    "Authenticate User"
                 ],
                 "summary": "Register User",
                 "description": "Register User",
@@ -174,7 +174,7 @@
         "api/user/remove": {
             "delete": {
                 "tags": [
-                    "Remove User"
+                    "Authenticate User"
                 ],
                 "summary": "Remove User",
                 "description": "Remove User",
@@ -207,7 +207,7 @@
         "/api/user/profile-image/update": {
             "put": {
                 "tags": [
-                    "Update User Profile Image"
+                    "Authenticate User"
                 ],
                 "summary": "Update User Profile Image",
                 "description": "Update User Profile Image",
@@ -260,7 +260,7 @@
         "/api/user/profile-data/update": {
             "put": {
                 "tags": [
-                    "Update User Profile Data"
+                    "Authenticate User"
                 ],
                 "summary": "Update User Profile Data",
                 "description": "Update User Profile Data",
@@ -317,7 +317,7 @@
         "/api/me": {
             "get": {
                 "tags": [
-                    "Show User Info"
+                    "Authenticate User"
                 ],
                 "summary": "Show User Info",
                 "description": "Show User Info",
@@ -350,7 +350,7 @@
         "/api/auth/forget-password": {
             "post": {
                 "tags": [
-                    "Forget user password"
+                    "Authenticate User"
                 ],
                 "summary": "Forget user password",
                 "description": "Forget user password",
@@ -403,7 +403,7 @@
         "api/auth/password/reset": {
             "post": {
                 "tags": [
-                    "Reset Password"
+                    "Authenticate User"
                 ],
                 "summary": "Reset User Password",
                 "description": "Reset User Password",
@@ -468,7 +468,7 @@
         "/api/comments/my-comments": {
             "get": {
                 "tags": [
-                    "Show User's Comments"
+                    "Comments"
                 ],
                 "summary": "Show User's Comments",
                 "description": "Show User's Comments",
@@ -501,7 +501,7 @@
         "/api/comments/create": {
             "post": {
                 "tags": [
-                    "Add new Comment"
+                    "Comments"
                 ],
                 "summary": "Add new Comment",
                 "description": "Add new Comment",
@@ -558,7 +558,7 @@
         "/api/comments/update/{comment}": {
             "put": {
                 "tags": [
-                    "Update User Comment"
+                    "Comments"
                 ],
                 "summary": "Update User Comment",
                 "description": "Update User Comment",
@@ -623,7 +623,7 @@
         "/api/comments/delete/{comment}": {
             "delete": {
                 "tags": [
-                    "Delete User Comment"
+                    "Comments"
                 ],
                 "summary": "Delete User Comment",
                 "description": "Delete User Comment",
@@ -665,10 +665,55 @@
                 ]
             }
         },
+        "/api/friends/unfriend/{friends}": {
+            "delete": {
+                "tags": [
+                    "Unfriends"
+                ],
+                "summary": "Unfriend from user",
+                "description": "Unfriend from user",
+                "operationId": "Unfriend from user",
+                "parameters": [
+                    {
+                        "name": "friendrequest",
+                        "in": "path",
+                        "description": "ID of the like to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful cancel friend request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthennticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/friends/request/my-friend-request": {
             "get": {
                 "tags": [
-                    "Personal Friend Request"
+                    "Friend Requests"
                 ],
                 "summary": "Personal Friend Request",
                 "description": "Personal Friend Request",
@@ -701,7 +746,7 @@
         "/api/friends/request/add": {
             "post": {
                 "tags": [
-                    "Add new Friend Request"
+                    "Friend Requests"
                 ],
                 "summary": "Add new Friend Request",
                 "description": "Add new Friend Request",
@@ -754,7 +799,7 @@
         "/api/friends/request/confirm/{friendrequest}": {
             "put": {
                 "tags": [
-                    "Confirm new Friend Request"
+                    "Friend Requests"
                 ],
                 "summary": "Confirm new Friend Request",
                 "description": "Confirm new Friend Request",
@@ -799,7 +844,7 @@
         "/api/friends/request/decline/{friendrequest}": {
             "put": {
                 "tags": [
-                    "Decline Friend Request"
+                    "Friend Requests"
                 ],
                 "summary": "Decline Friend Request",
                 "description": "Decline Friend Request",
@@ -844,11 +889,11 @@
         "/api/friends/cancel/{friendRequest}": {
             "delete": {
                 "tags": [
-                    "Unfriend A User"
+                    "Friend Requests"
                 ],
-                "summary": "Unfriend a user",
-                "description": "Unfriend A User",
-                "operationId": "unfriend a user",
+                "summary": "Remove friend request",
+                "description": "Remove friend request",
+                "operationId": "remove friend request",
                 "parameters": [
                     {
                         "name": "friendrequest",
@@ -889,7 +934,7 @@
         "/api/likes/my-likes": {
             "get": {
                 "tags": [
-                    "Personal Likes"
+                    "Likes"
                 ],
                 "summary": "Personal Likes",
                 "description": "Personal Likes",
@@ -922,7 +967,7 @@
         "/api/likes/create": {
             "post": {
                 "tags": [
-                    "Add new Like"
+                    "Likes"
                 ],
                 "summary": "Add new Like",
                 "description": "Add new Like",
@@ -979,7 +1024,7 @@
         "/api/likes/update/{like}": {
             "put": {
                 "tags": [
-                    "Update reactions"
+                    "Likes"
                 ],
                 "summary": "Update reactions",
                 "description": "Update reactions",
@@ -1001,13 +1046,9 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "post_id",
                                     "react_id"
                                 ],
                                 "properties": {
-                                    "post_id": {
-                                        "type": "integer"
-                                    },
                                     "react_id": {
                                         "type": "integer"
                                     }
@@ -1048,7 +1089,7 @@
         "/api/likes/delete/{like}": {
             "delete": {
                 "tags": [
-                    "Delete reactions"
+                    "Likes"
                 ],
                 "summary": "Delete reactions",
                 "description": "Delete reactions",
@@ -1093,7 +1134,7 @@
         "/api/posts/create": {
             "post": {
                 "tags": [
-                    "Create Post"
+                    "Post"
                 ],
                 "summary": "Create Post",
                 "description": "Create Post",
@@ -1150,7 +1191,7 @@
         "/api/posts/my-posts": {
             "get": {
                 "tags": [
-                    "Personal Posts"
+                    "Posts"
                 ],
                 "summary": "Personal Posts",
                 "description": "Show Users's Posts",
@@ -1183,7 +1224,7 @@
         "/api/posts/update/{post}": {
             "put": {
                 "tags": [
-                    "Update Post"
+                    "Post"
                 ],
                 "summary": "Update Post Posts",
                 "description": "Update Users's Posts",
@@ -1248,7 +1289,7 @@
         "/api/posts/delete/{post}": {
             "delete": {
                 "tags": [
-                    "Delete Post"
+                    "Post"
                 ],
                 "summary": "Delete Post",
                 "description": "Delete User's Posts",
@@ -1293,7 +1334,7 @@
         "/api/replies/my-replies": {
             "get": {
                 "tags": [
-                    "Show User's Replies"
+                    "Reply"
                 ],
                 "summary": "Show User's Replies",
                 "description": "Show User's Replies",
@@ -1326,7 +1367,7 @@
         "/api/replies/create": {
             "post": {
                 "tags": [
-                    "Add new Replies"
+                    "Reply"
                 ],
                 "summary": "Add new Replies",
                 "description": "Add new Replies",
@@ -1383,7 +1424,7 @@
         "/api/replies/update/{reply}": {
             "put": {
                 "tags": [
-                    "Update User Replies"
+                    "Reply"
                 ],
                 "summary": "Update User Replies",
                 "description": "Update User Replies",
@@ -1448,7 +1489,7 @@
         "/api/replies/delete/{reply}": {
             "delete": {
                 "tags": [
-                    "Delete User Replies"
+                    "Reply"
                 ],
                 "summary": "Delete User Replies",
                 "description": "Delete User Replies",

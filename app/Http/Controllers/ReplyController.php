@@ -20,7 +20,7 @@ class ReplyController extends Controller
     /**
      * @OA\Get(
      *     path="/api/replies/my-replies",
-     *     tags={"Show User's Replies"},
+     *     tags={"Reply"},
      *     summary="Show User's Replies",
      *     description="Show User's Replies",
      *     operationId="show user's Replies",
@@ -39,12 +39,12 @@ class ReplyController extends Controller
      */
     public function myReplies()
     {
-        $uid=Auth::id();
-        try{
-            $replies=Reply::where('user_id',$uid)->get();
-            return response()->json(['success'=>true,'data'=>ReplyResource::collection($replies)]);
-        }catch (\Exception $e){
-            return response()->json(['success'=>false,'error'=>['message'=>$e->getMessage()]],500);
+        $uid = Auth::id();
+        try {
+            $replies = Reply::where('user_id', $uid)->get();
+            return response()->json(['success' => true, 'data' => ReplyResource::collection($replies)]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -54,7 +54,7 @@ class ReplyController extends Controller
     /**
      * @OA\Post(
      *     path="/api/replies/create",
-     *     tags={"Add new Replies"},
+     *     tags={"Reply"},
      *     summary="Add new Replies",
      *     description="Add new Replies",
      *     operationId="add new replies",
@@ -85,14 +85,14 @@ class ReplyController extends Controller
      */
     public function store(StoreReplyRequest $request)
     {
-        $uid=Auth::id();
-        $data=$request->validated();
-        $data['user_id']=$uid;
+        $uid = Auth::id();
+        $data = $request->validated();
+        $data['user_id'] = $uid;
         try {
-            $reply=Reply::create($data);
-            return response()->json(['success'=>true,'message'=>'Reply added','data'=>ReplyResource::make($reply)],201);
-        }catch (\Exception $exception){
-            return response()->json(['success'=>false,'message'=>$exception->getMessage()],422);
+            $reply = Reply::create($data);
+            return response()->json(['success' => true, 'message' => 'Reply added', 'data' => ReplyResource::make($reply)], 201);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()], 422);
         }
     }
 
@@ -119,7 +119,7 @@ class ReplyController extends Controller
     /**
      * @OA\Put(
      *     path="/api/replies/update/{reply}",
-     *     tags={"Update User Replies"},
+     *     tags={"Reply"},
      *     summary="Update User Replies",
      *     description="Update User Replies",
      *     operationId="update user replies",
@@ -159,14 +159,14 @@ class ReplyController extends Controller
      */
     public function update(UpdateReplyRequest $request, Reply $reply)
     {
-        $user_id=Auth::id();
-        $data=$request->validated();
-        $data['user_id']=$user_id;
-        if($reply->user_id==$user_id){
+        $user_id = Auth::id();
+        $data = $request->validated();
+        $data['user_id'] = $user_id;
+        if ($reply->user_id == $user_id) {
             $reply->update($data);
-            return  response()->json(['success'=>true,'message'=>'Reply updated','data'=>ReplyResource::make($reply)],201);
-        }else {
-            return response()->json(['success'=>false,'message'=>'You cannot edit this reply.'],422);
+            return  response()->json(['success' => true, 'message' => 'Reply updated', 'data' => ReplyResource::make($reply)], 201);
+        } else {
+            return response()->json(['success' => false, 'message' => 'You cannot edit this reply.'], 422);
         }
     }
 
@@ -176,7 +176,7 @@ class ReplyController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/replies/delete/{reply}",
-     *     tags={"Delete User Replies"},
+     *     tags={"Reply"},
      *     summary="Delete User Replies",
      *     description="Delete User Replies",
      *     operationId="delete user replies",
@@ -205,12 +205,12 @@ class ReplyController extends Controller
      */
     public function destroy(Reply $reply)
     {
-        $user_id=Auth::id();
-        if($reply->user_id==$user_id){
+        $user_id = Auth::id();
+        if ($reply->user_id == $user_id) {
             $reply->delete();
-            return  response()->json(['success'=>true,'message'=>'Reply updated','data'=>ReplyResource::make($reply)],201);
-        }else {
-            return response()->json(['success'=>false,'message'=>'You cannot remove this reply.'],422);
+            return  response()->json(['success' => true, 'message' => 'Reply updated', 'data' => ReplyResource::make($reply)], 201);
+        } else {
+            return response()->json(['success' => false, 'message' => 'You cannot remove this reply.'], 422);
         }
     }
 }

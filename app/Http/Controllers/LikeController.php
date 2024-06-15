@@ -20,7 +20,7 @@ class LikeController extends Controller
     /**
      * @OA\Get(
      *     path="/api/likes/my-likes",
-     *     tags={"Personal Likes"},
+     *     tags={"Likes"},
      *     summary="Personal Likes",
      *     description="Personal Likes",
      *     operationId="personal likes",
@@ -64,7 +64,7 @@ class LikeController extends Controller
     /**
      * @OA\Post(
      *     path="/api/likes/create",
-     *     tags={"Add new Like"},
+     *     tags={"Likes"},
      *     summary="Add new Like",
      *     description="Add new Like",
      *     operationId="add new like",
@@ -129,7 +129,7 @@ class LikeController extends Controller
     /**
      * @OA\Put(
      *     path="/api/likes/update/{like}",
-     *     tags={"Update reactions"},
+     *     tags={"Likes"},
      *     summary="Update reactions",
      *     description="Update reactions",
      *     operationId="update reactions",
@@ -150,8 +150,7 @@ class LikeController extends Controller
      *              mediaType="multipart/form-data",
      *              @OA\Schema(
      *                  type="object",
-     *                  required={"post_id","react_id"},
-     *                  @OA\Property(property="post_id",type="integer"),
+     *                  required={"react_id"},
      *                  @OA\Property(property="react_id",type="integer"),
      *              ),
      *          ),
@@ -191,7 +190,7 @@ class LikeController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/likes/delete/{like}",
-     *     tags={"Delete reactions"},
+     *     tags={"Likes"},
      *     summary="Delete reactions",
      *     description="Delete reactions",
      *     operationId="delete reactions",

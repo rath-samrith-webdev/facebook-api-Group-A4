@@ -22,7 +22,7 @@ class UpdateLikeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'post_id' => 'required|exists:posts,id',
+            'post_id' => 'exists:posts,id',
             'user_id' => 'exists:users,id',
             'react_id' => 'required|exists:reacts,id',
         ];
