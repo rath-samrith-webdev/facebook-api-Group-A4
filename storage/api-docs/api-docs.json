@@ -221,7 +221,8 @@
                                 ],
                                 "properties": {
                                     "image": {
-                                        "type": "file"
+                                        "type": "file",
+                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"

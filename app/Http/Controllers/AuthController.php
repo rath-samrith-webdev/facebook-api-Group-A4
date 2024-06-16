@@ -187,7 +187,7 @@ class AuthController extends Controller
      *              @OA\Schema(
      *                  type="object",
      *                  required={"image"},
-     *                  @OA\Property(property="image",type="file"),
+     *                  @OA\Property(property="image",type="file",format="binary"),
      *              ),
      *          ),
      *      ),
