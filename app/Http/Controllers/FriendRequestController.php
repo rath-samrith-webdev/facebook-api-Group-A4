@@ -205,6 +205,7 @@ class FriendRequestController extends Controller
         try {
             if ($friendRequest->request_to == $uid && $friendRequest->status == 'pending') {
                 $friendRequest->update(['status' => 'decline']);
+                $friendRequest->delete();
                 return response()->json(['status' => 'success', 'message' => 'Friend request has been declined'], 200);
             } else {
                 return response()->json(['status' => 'error', 'message' => 'Something went wrong'], 400);

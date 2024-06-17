@@ -53,7 +53,7 @@ class FriendListController extends Controller
      */
     /**
      * @OA\Delete(
-     *     path="/api/friends/unfriend/{friends}",
+     *     path="/api/friends/unfriend/{friendList}",
      *     tags={"Unfriends"},
      *     summary="Unfriend from user",
      *     description="Unfriend from user",
@@ -89,7 +89,7 @@ class FriendListController extends Controller
                 $friendList->delete();
                 return response()->json(['success' => true, 'data' => FriendListResource::collection(FriendList::all())], 200);
             } else {
-                return response()->json(['success' => false, 'data' => 'You are not authorized to delete this list'], 403);
+                return response()->json(['success' => false, 'data' => 'You are not authorized to delete this list', 'd' => $friendList], 403);
             }
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'data' => $exception->getMessage()], 400);

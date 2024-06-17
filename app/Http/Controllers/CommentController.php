@@ -216,10 +216,14 @@ class CommentController extends Controller
     public function destroy(Comment $comment): JsonResponse
     {
         try {
-            $comment->delete();
-            return response()->json(null, 204);
+            if ($comment->user_id == Auth::id()) {
+                $comment->delete();
+                return response()->json(['success' => true, 'message' => 'comment has been deleted'], 200);
+            } else {
+                return response()->json(['success' => false, 'message' => 'You are not authorized'], 500);
+            };
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Comment is not found'], 404);
+            return response()->json(['error' => 'Comment is not found', 'message' => $e->getMessage()], 404);
         }
     }
 }

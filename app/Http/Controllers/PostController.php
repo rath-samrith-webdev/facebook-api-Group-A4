@@ -116,7 +116,7 @@ class PostController extends Controller
         $uid = Auth::id();
         $posts = Post::where('user_id', $uid)->get();
         if ($posts->count() > 0) {
-            return response()->json(['success' => true, 'data' => $posts], 200);
+            return response()->json(['success' => true, 'data' => PostResource::collection($posts)], 200);
         } else {
             return response()->json(['success' => false, 'data' => []], 200);
         }
